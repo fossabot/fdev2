@@ -9,6 +9,7 @@ ADD http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.n
 RUN \
   cd /tmp && rpm -Uvh epel-release*rpm && \
   yum install -y \
+    cppcheck \
     spdlog-devel
 USER 1001
 
