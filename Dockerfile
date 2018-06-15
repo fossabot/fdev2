@@ -11,6 +11,7 @@ RUN \
   yum install -y \
     cppcheck \
     lcov \
-    spdlog-devel
+    spdlog-devel \
+    websocketpp
 USER 1001
 
