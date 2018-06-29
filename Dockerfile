@@ -10,6 +10,7 @@ RUN \
   cd /tmp && rpm -Uvh epel-release*rpm && \
   yum install -y \
     cppcheck \
+    hdf5-devel \
     lcov \
     spdlog-devel \
     websocketpp
