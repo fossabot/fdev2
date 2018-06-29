@@ -12,6 +12,7 @@ RUN \
     cppcheck \
     hdf5-devel \
     lcov \
+    libwebsockets-devel \
     spdlog-devel \
     websocketpp
 USER 1001
