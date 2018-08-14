@@ -37,6 +37,7 @@ RUN \
     lcov \
     libwebsockets-devel \
     spdlog-devel \
-    websocketpp
+    websocketpp \
+    libuuid-devel
 USER 1001
 
