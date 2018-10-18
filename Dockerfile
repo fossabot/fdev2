@@ -13,7 +13,8 @@ RUN \
     libc++-dev \
     libgflags-dev \
     libgtest-dev \
-    libtool
+    libtool \
+    which
 RUN \
   # CppUTest
   cd /tmp && tar -xf cpputest-3.8.tar.gz && cd cpputest-3.8/cpputest_build && \
@@ -29,8 +30,10 @@ RUN \
     echo "--- installing protobuf ---" && \
     cd third_party/protobuf && \
     ./autogen.sh && ./configure --enable-shared && \
+    make -j$(nproc) && make install && make clean && ldconfig && \
+    echo "--- installing grpc ---" && \
+    cd /var/local/git/grpc && \
     make -j$(nproc) && make install && make clean && ldconfig
-
 
 # Put the main image together
 FROM tafthorne/make-devtoolset-7-toolchain-centos7
@@ -48,6 +51,10 @@ COPY --from=builder /usr/local/lib/pkgconfig/cpputest.pc /usr/local/lib/pkgconfi
 COPY --from=builder /usr/local/lib/libproto* /usr/local/lib/
 COPY --from=builder /usr/local/bin/protoc /usr/local/bin/
 COPY --from=builder /usr/local/include/google/protobuf /usr/local/include/google/protobuf
+# gRPC
+COPY --from=builder /usr/local/lib/libgrpc* /usr/local/lib/
+COPY --from=builder /usr/local/bin/grpc_* /usr/local/bin/
+COPY --from=builder /usr/local/lib/libaddress_sorting.so.6.0.0 /usr/local/lib/
 # Install remaining tools using yum
 ADD http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm /tmp/
 RUN \
@@ -56,9 +63,10 @@ RUN \
     cppcheck \
     hdf5-devel \
     lcov \
+    libuuid-devel \
     libwebsockets-devel \
     spdlog-devel \
     websocketpp \
-    libuuid-devel
+    which
 USER 1001
 
