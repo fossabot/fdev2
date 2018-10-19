@@ -48,13 +48,16 @@ COPY --from=builder /usr/local/include/CppUTestExt /usr/local/include/CppUTestEx
 COPY --from=builder /usr/local/lib/libCppUTest*.a /usr/local/lib/
 COPY --from=builder /usr/local/lib/pkgconfig/cpputest.pc /usr/local/lib/pkgconfig/
 # Protocol Buffer
-COPY --from=builder /usr/local/lib/libproto* /usr/local/lib/
 COPY --from=builder /usr/local/bin/protoc /usr/local/bin/
 COPY --from=builder /usr/local/include/google/protobuf /usr/local/include/google/protobuf
+COPY --from=builder /usr/local/lib/libproto* /usr/local/lib/
+COPY --from=builder /usr/local/lib/pkgconfig/protobuf*.pc /usr/local/lib/pkgconfig/
 # gRPC
-COPY --from=builder /usr/local/lib/libgrpc* /usr/local/lib/
 COPY --from=builder /usr/local/bin/grpc_* /usr/local/bin/
 COPY --from=builder /usr/local/lib/libaddress_sorting.so.6.0.0 /usr/local/lib/
+COPY --from=builder /usr/local/lib/libgrpc* /usr/local/lib/
+COPY --from=builder /usr/local/lib/pkgconfig/gpr.pc /usr/local/lib/pkgconfig/
+COPY --from=builder /usr/local/lib/pkgconfig/grpc*.pc /usr/local/lib/pkgconfig/
 # Install remaining tools using yum
 ADD http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm /tmp/
 RUN \
