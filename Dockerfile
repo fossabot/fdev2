@@ -54,7 +54,11 @@ COPY --from=builder /usr/local/lib/libproto* /usr/local/lib/
 COPY --from=builder /usr/local/lib/pkgconfig/protobuf*.pc /usr/local/lib/pkgconfig/
 # gRPC
 COPY --from=builder /usr/local/bin/grpc_* /usr/local/bin/
+COPY --from=builder /usr/local/include/grpc /usr/local/include/grpc
+COPY --from=builder /usr/local/include/grpc++ /usr/local/include/grpc++
+COPY --from=builder /usr/local/include/grpcpp /usr/local/include/grpcpp
 COPY --from=builder /usr/local/lib/libaddress_sorting.so.6.0.0 /usr/local/lib/
+COPY --from=builder /usr/local/lib/libgpr* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libgrpc* /usr/local/lib/
 COPY --from=builder /usr/local/lib/pkgconfig/gpr.pc /usr/local/lib/pkgconfig/
 COPY --from=builder /usr/local/lib/pkgconfig/grpc*.pc /usr/local/lib/pkgconfig/
