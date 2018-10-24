@@ -40,32 +40,40 @@ FROM tafthorne/make-devtoolset-7-toolchain-centos7
 LABEL \
  Description="Basic gcc CentOS environment with a number of libraries configured" \
  MAINTAINER="Thomas Thorne <TafThorne@GoogleMail.com>"
+ARG prefix=/usr
+ARG binPath=$prefix/bin
+ARG includePath=$prefix/include
+ARG libPath=$prefix/lib
+ARG pkgconfigPath=/usr/share/pkgconfig
 USER 0
 # Copy over pre-made tools
 # CppUTest
-COPY --from=builder /usr/local/include/CppUTest /usr/local/include/CppUTest
-COPY --from=builder /usr/local/include/CppUTestExt /usr/local/include/CppUTestExt
-COPY --from=builder /usr/local/lib/libCppUTest*.a /usr/local/lib/
-COPY --from=builder /usr/local/lib/pkgconfig/cpputest.pc /usr/local/lib/pkgconfig/
+COPY --from=builder /usr/local/include/CppUTest $includePath/CppUTest
+COPY --from=builder /usr/local/include/CppUTestExt includePath/CppUTestExt
+COPY --from=builder /usr/local/lib/libCppUTest*.a $libPath/
+COPY --from=builder /usr/local/lib/pkgconfig/cpputest.pc $pkgconfigPath/
+RUN sed -i 's/\/usr\/local/\/usr/g' $pkgconfigPath/cpputest.pc
 # Protocol Buffer
-COPY --from=builder /usr/local/bin/protoc /usr/local/bin/
-COPY --from=builder /usr/local/include/google/protobuf /usr/local/include/google/protobuf
-COPY --from=builder /usr/local/lib/libproto* /usr/local/lib/
-COPY --from=builder /usr/local/lib/pkgconfig/protobuf*.pc /usr/local/lib/pkgconfig/
+COPY --from=builder /usr/local/bin/protoc $binPath/
+COPY --from=builder /usr/local/include/google/protobuf $includePath/google/protobuf
+COPY --from=builder /usr/local/lib/libproto* $libPath/
+COPY --from=builder /usr/local/lib/pkgconfig/protobuf*.pc $pkgconfigPath/
+RUN sed -i 's/\/usr\/local/\/usr/g' $pkgconfigPath/protobuf*.pc
 # gRPC
-COPY --from=builder /usr/local/bin/grpc_* /usr/local/bin/
-COPY --from=builder /usr/local/include/grpc /usr/local/include/grpc
-COPY --from=builder /usr/local/include/grpc++ /usr/local/include/grpc++
-COPY --from=builder /usr/local/include/grpcpp /usr/local/include/grpcpp
-COPY --from=builder /usr/local/lib/libaddress_sorting.so.6.0.0 /usr/local/lib/
-COPY --from=builder /usr/local/lib/libgpr* /usr/local/lib/
-COPY --from=builder /usr/local/lib/libgrpc* /usr/local/lib/
-COPY --from=builder /usr/local/lib/pkgconfig/gpr.pc /usr/local/lib/pkgconfig/
-COPY --from=builder /usr/local/lib/pkgconfig/grpc*.pc /usr/local/lib/pkgconfig/
+COPY --from=builder /usr/local/bin/grpc_* $binPath/
+COPY --from=builder /usr/local/include/grpc $includePath/grpc
+COPY --from=builder /usr/local/include/grpc++ $includePath/grpc++
+COPY --from=builder /usr/local/include/grpcpp $includePath/grpcpp
+COPY --from=builder /usr/local/lib/libaddress_sorting.so.6.0.0 $libPath/
+COPY --from=builder /usr/local/lib/libgpr* $libPath/
+COPY --from=builder /usr/local/lib/libgrpc* $libPath/
+COPY --from=builder /usr/local/lib/pkgconfig/gpr.pc $pkgconfigPath/
+COPY --from=builder /usr/local/lib/pkgconfig/grpc*.pc $pkgconfigPath/
+RUN sed -i 's/\/usr\/local/\/usr/g' $pkgconfigPath/grp*.pc
+RUN ldconfig
 # Install remaining tools using yum
-ADD http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm /tmp/
 RUN \
-  cd /tmp && rpm -Uvh epel-release*rpm && \
+  yum install -y epel-release && \
   yum install -y \
     cppcheck \
     hdf5-devel \
