@@ -14,7 +14,6 @@ RUN \
     libgflags-dev \
     libgtest-dev \
     libtool \
-    valgrind \
     which
 RUN \
   # CppUTest
@@ -82,6 +81,7 @@ RUN \
     libuuid-devel \
     libwebsockets-devel \
     spdlog-devel \
+    valgrind \
     websocketpp \
     which
 USER 1001
