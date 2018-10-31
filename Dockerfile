@@ -14,6 +14,7 @@ RUN \
     libgflags-dev \
     libgtest-dev \
     libtool \
+    valgrind \
     which
 RUN \
   # CppUTest
