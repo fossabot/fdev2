@@ -76,6 +76,7 @@ RUN \
   yum install -y epel-release && \
   yum install -y \
     cppcheck \
+    git \
     hdf5-devel \
     lcov \
     libuuid-devel \
