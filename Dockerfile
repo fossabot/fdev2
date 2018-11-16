@@ -5,7 +5,7 @@ FROM tafthorne/make-devtoolset-7-toolchain-centos7 as base
 USER 0
 RUN \
   yum install -y epel-release && \
-  yum install -y \
+  yum install --setopt=skip_missing_names_on_install=False -y \
     git \
     gflags \
     which
@@ -14,7 +14,8 @@ RUN \
 FROM base as builder
 ADD https://github.com/cpputest/cpputest/releases/download/v3.8/cpputest-3.8.tar.gz /tmp/
 RUN \
-  yum install -y \
+  yum install -y epel-release && \
+  yum --setopt=skip_missing_names_on_install=False install -y \
     automake \
     autoconf \
     clang \
@@ -81,14 +82,13 @@ RUN sed -i 's/\/usr\/local/\/usr/g' $pkgconfigPath/grp*.pc && ldconfig
 COPY --from=builder /var/local/git/grpc/bins/opt/grpc_cli $binPath/
 # Install remaining tools using yum
 RUN \
-  yum install -y \
+  yum --setopt=skip_missing_names_on_install=False install -y \
     cppcheck \
     hdf5-devel \
     lcov \
-    libuuid-devel \
-    libwebsockets-devel \
+    uuid-devel \
     spdlog-devel \
     valgrind \
-    websocketpp
+    libwebsockets
 USER 1001
 
