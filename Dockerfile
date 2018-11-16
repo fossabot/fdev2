@@ -1,20 +1,26 @@
 # GNU GCC & other Libraries ontop of CentOS
 
-#Compile any tools we cannot install from packages
-FROM tafthorne/make-devtoolset-7-toolchain-centos7 as builder
+# Setup basic image for tool complilation to take place in
+FROM tafthorne/make-devtoolset-7-toolchain-centos7 as base
 USER 0
+RUN \
+  yum install -y epel-release && \
+  yum install -y \
+    git \
+    gflags \
+    which
+
+# Compile any tools we cannot install from packages
+FROM base as builder
 ADD https://github.com/cpputest/cpputest/releases/download/v3.8/cpputest-3.8.tar.gz /tmp/
 RUN \
   yum install -y \
     automake \
     autoconf \
     clang \
-    git \
-    libc++-dev \
-    libgflags-dev \
-    libgtest-dev \
-    libtool \
-    which
+    gflags-devel \
+    gtest-devel \
+    libtool
 RUN \
   # CppUTest
   cd /tmp && tar -xf cpputest-3.8.tar.gz && cd cpputest-3.8/cpputest_build && \
@@ -33,10 +39,11 @@ RUN \
     make -j$(nproc) && make install && make clean && ldconfig && \
     echo "--- installing grpc ---" && \
     cd /var/local/git/grpc && \
-    make -j$(nproc) && make install && make clean && ldconfig
+    make -j$(nproc) && make install && make clean && ldconfig && \
+    make -j$(nproc) grpc_cli
 
 # Put the main image together
-FROM tafthorne/make-devtoolset-7-toolchain-centos7
+FROM base
 LABEL \
  Description="Basic gcc CentOS environment with a number of libraries configured" \
  MAINTAINER="Thomas Thorne <TafThorne@GoogleMail.com>"
@@ -69,21 +76,19 @@ COPY --from=builder /usr/local/lib/libgpr* $libPath/
 COPY --from=builder /usr/local/lib/libgrpc* $libPath/
 COPY --from=builder /usr/local/lib/pkgconfig/gpr.pc $pkgconfigPath/
 COPY --from=builder /usr/local/lib/pkgconfig/grpc*.pc $pkgconfigPath/
-RUN sed -i 's/\/usr\/local/\/usr/g' $pkgconfigPath/grp*.pc
-RUN ldconfig
+RUN sed -i 's/\/usr\/local/\/usr/g' $pkgconfigPath/grp*.pc && ldconfig
+# grpc_cli
+COPY --from=builder /var/local/git/grpc/bins/opt/grpc_cli $binPath/
 # Install remaining tools using yum
 RUN \
-  yum install -y epel-release && \
   yum install -y \
     cppcheck \
-    git \
     hdf5-devel \
     lcov \
     libuuid-devel \
     libwebsockets-devel \
     spdlog-devel \
     valgrind \
-    websocketpp \
-    which
+    websocketpp
 USER 1001
 
