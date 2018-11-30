@@ -86,9 +86,9 @@ RUN \
     cppcheck \
     hdf5-devel \
     lcov \
-    uuid-devel \
     spdlog-devel \
     valgrind \
+    libuuid-devel \
     libwebsockets
 USER 1001
 
