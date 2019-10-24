@@ -1,4 +1,6 @@
 # fdev2
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTafThorne%2Ffdev2.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTafThorne%2Ffdev2?ref=badge_shield)
+
 Dockerfile that sets up a basic gcc CentOS environment with a number of
 libraries configured
 
@@ -36,3 +38,7 @@ see their project page.
 
 Please see the notes in CONTRIBUTING.md.
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTafThorne%2Ffdev2.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FTafThorne%2Ffdev2?ref=badge_large)
